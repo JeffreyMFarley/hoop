@@ -45,7 +45,7 @@ digraph {
 
   InternetGateway [image="icons/IGW.png" label="Internet Gateway"]
 
-  Route53 [image="icons/Route53.png" label="pluribuslab.com"]
+  Route53 [image="icons/Route53.png" label="foobar.com"]
   CertManager [image="icons/CertManager.png" label="SSL Support"]
 
   APIGateway [image="icons/API-Gateway.png"]
