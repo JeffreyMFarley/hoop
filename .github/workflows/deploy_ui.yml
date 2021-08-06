@@ -1,0 +1,78 @@
+name: Deploy Website
+
+on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+        TF_DIR:     ./terraform
+        DIST_DIR:   ./services/ui/dist/
+        UI_SRC_DIR: ./services/ui/
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_wrapper: false
+
+    - name: Get Terraform outputs
+      id: tf
+      run: |
+          terraform init
+          echo "::set-output name=bucket::$(terraform output static_web_bucket)"
+      working-directory: ${{ env.TF_DIR }}
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install
+      run: npm install
+      working-directory: ${{ env.UI_SRC_DIR }}
+
+    - name: Build
+      run: npm run build
+      working-directory: ${{ env.UI_SRC_DIR }}
+
+    - name: Deploy static site to S3 bucket
+      run: aws s3 sync ${{ env.DIST_DIR }} s3://${{ steps.tf.outputs.bucket }} --delete
+
+    # From this point forward, the action assumes there is a full, running setup
+
+    - name: Get Terraform outputs (steady-state)
+      id: tf2
+      run: |
+          echo "::set-output name=cloudfront_id::$(terraform output cloudfront_id)"
+      working-directory: ${{ env.TF_DIR }}
+      continue-on-error: true
+
+    - name: Invalidate the Cache
+      run: |
+          aws configure set preview.cloudfront true
+          aws cloudfront create-invalidation --distribution-id ${{ steps.tf2.outputs.cloudfront_id }} --paths '/*'
+      continue-on-error: true

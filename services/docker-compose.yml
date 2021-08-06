@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  fortunes:
+    container_name: fortunes
+    image: fortunes:latest
+    build:
+      context: ./fortunes
+    ports:
+      - 9000:8080
+
+  heroes:
+    container_name: heroes
+    image: heroes:latest
+    build:
+      context: ./heroes
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: foobar
+      POSTGRES_DB: main
+      POSTGRES_HOST: db
+    ports:
+      - 5050:5000
+    volumes:
+      - ./heroes/src/app.py:/home/app/app.py
+
+  names:
+    container_name: names
+    image: names:latest
+    build:
+      context: ./names
+    ports:
+      - 5000:5000
+    volumes:
+      - ./names/src/app.py:/home/app/app.py
+
+  db:
+    container_name: postgres
+    image: postgres:dev
+    build:
+      context: ./postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: foobar
+      POSTGRES_DB: main
+    ports:
+      - "5432:5432"
+#     volumes:
+#       - data-volume:/var/lib/postgresql/data
+#
+# volumes:
+#   data-volume:

@@ -1,0 +1,30 @@
+name: Pull Request QA
+
+on: pull_request
+
+jobs:
+
+  ui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./services/ui
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install Node dependencies
+        run: |
+          npm config set package-lock false
+          npm install
+      
+      - name: Lint the source code
+        run: npm run lint
+
+      - name: Run front-end unit tests
+        run: npm test

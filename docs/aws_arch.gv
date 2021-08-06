@@ -1,0 +1,101 @@
+digraph {
+  rankdir=LR;
+  compound=true
+  # ordering=in
+  # splines=ortho
+
+
+  node [fontsize=12 shape=box labelloc=b imagepos=tc color=none height=1.0]
+  edge [fontsize=10 fontname=Courier]
+
+  subgraph cluster_100 {
+    label="VPC\n10.0.0.0/24"
+    fontsize=14
+
+    subgraph cluster_1100 {
+      label="Private\n10.0.0.128/26"
+
+      Names0 [label="Names" image="icons/ECS.png"]
+      Heroes0 [label="Heroes" image="icons/ECS.png"]
+    }
+
+    subgraph cluster_1200 {
+      label="Private\n10.0.0.192/26"
+
+      Names1 [label="Names" image="icons/ECS.png"]
+      Heroes1 [label="Heroes" image="icons/ECS.png"]
+    }
+
+    subgraph cluster_1000 {
+      label="Public\n10.0.0.64/26"
+
+      public_placeholder [label="Bastion?" style=dashed labelloc=c color=black]
+    }
+
+    RDS [label="PostGRES" image="icons/RDS.png"]
+
+    LoadBalancer_Names [image="icons/LB.png" label="Load Balancer"]
+    LoadBalancer_Heroes [image="icons/LB.png" label="Load Balancer"]
+
+    VPC_Endpoint_ECR [label="ECR Endpoint" image="icons/VPC.png"]
+    VPC_Endpoint_CloudWatch [label="Cloudwatch Endpoint" image="icons/VPC.png"]
+    VPC_Endpoint_S3 [label="S3 Endpoint" image="icons/VPC.png"]
+    VPC_Endpoint_Secrets [label="Secrets Endpoint" image="icons/VPC.png"]
+  }
+
+  InternetGateway [image="icons/IGW.png" label="Internet Gateway"]
+
+  Route53 [image="icons/Route53.png" label="pluribuslab.com"]
+  CertManager [image="icons/CertManager.png" label="SSL Support"]
+
+  APIGateway [image="icons/API-Gateway.png"]
+
+  VPC_Link_Names [image="icons/VPC.png" label="VPC Link"]
+  VPC_Link_Heroes [image="icons/VPC.png" label="VPC Link"]
+
+  CloudFront [image="icons/CloudFront.png"]
+
+  CloudWatch [image="icons/CloudWatch.png"]
+  ECR [image="icons/ECR.png" label="Image Repo"]
+  S3 [image="icons/S3.png"]
+  Secrets [image="icons/Secrets.png"]
+
+  Fortunes [image="icons/Lambda.png"]
+  Website [image="icons/S3.png"]
+
+  ################################################################################
+  # Edges
+
+  InternetGateway -> public_placeholder
+
+  Route53 -> APIGateway [label="api.*"]
+  Route53 -> CloudFront [label="www.*"]
+  Route53 -> CertManager [constraint=false arrowhead=none]
+
+  CloudFront -> Website
+
+  VPC_Endpoint_ECR -> ECR
+  VPC_Endpoint_CloudWatch -> CloudWatch
+  VPC_Endpoint_S3 -> S3
+  VPC_Endpoint_Secrets -> Secrets
+
+  # Invisible Links
+  Heroes1 -> {VPC_Endpoint_ECR, VPC_Endpoint_CloudWatch, VPC_Endpoint_S3, VPC_Endpoint_Secrets} [ltail=cluster_1200 color=none]
+
+  Heroes0 -> RDS [ltail=cluster_1100]
+  Heroes1 -> RDS [ltail=cluster_1200]
+
+  APIGateway -> VPC_Link_Names [label="/v1/names"]
+  VPC_Link_Names -> LoadBalancer_Names [label=":5000"]
+  LoadBalancer_Names -> Names0 [label=":5000"]
+  LoadBalancer_Names -> Names1 [label=":5000"]
+
+  APIGateway -> VPC_Link_Heroes [label="/v1/heroes"]
+  VPC_Link_Heroes -> LoadBalancer_Heroes [label=":5050"]
+  LoadBalancer_Heroes -> Heroes0 [label=":5000"]
+  LoadBalancer_Heroes -> Heroes1 [label=":5000"]
+
+  APIGateway -> Fortunes [label="/v1/fortunes"]
+
+  Fortunes -> ECR
+}
