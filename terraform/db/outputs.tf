@@ -13,3 +13,7 @@ output "db_name" {
 output "host" {
   value = aws_db_instance.main.address
 }
+
+output "password" {
+  value = random_string.db_password.result
+}

@@ -22,22 +22,17 @@ variable "developer_cidr_blocks" {
   description = "CIDR blocks of the developers"
 }
 
-variable "public_subnet_ids" {
+variable "inbound_subnets" {
   type        = list(string)
-  description = "IDs for public subnets"
+  description = "CIDR blocks of VPC subnets that will call the DB"
 }
 
-variable "private_subnet_cidr_blocks" {
-  type        = list(string)
-  description = "CIDR blocks for private subnets"
-}
-
-variable "private_subnet_ids" {
-  type        = list(string)
-  description = "IDs for private subnets"
+variable "subnet_group_name" {
+  type        = string
+  description = "The name of the database subnet group"
 }
 
 variable "vpc_id" {
   type        = string
-  description = "The id for the VPC where the ECS container instance should be deployed"
+  description = "The id for the VPC where the database should be deployed"
 }

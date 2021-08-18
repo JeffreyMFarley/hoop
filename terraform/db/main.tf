@@ -25,34 +25,31 @@ resource "aws_db_instance" "main" {
   publicly_accessible             = true
   skip_final_snapshot             = true
 
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.id
+  db_subnet_group_name   = var.subnet_group_name
   vpc_security_group_ids = [
     aws_security_group.main.id
   ]
 }
 
-resource "aws_db_subnet_group" "db_subnet_group" {
-  name       = lower("${var.name}-db-subnet-group")
-  subnet_ids = concat(var.private_subnet_ids, var.public_subnet_ids)
-}
-
 resource "aws_security_group" "main" {
   name        = "${var.name}-db-sg"
+  description = "Access to the database"
   vpc_id      = var.vpc_id
 
-  tags = {
-    Name = "${var.name} Database security group"
+  ingress {
+    protocol    = "tcp"
+    description = "Developer access to PostGRES"
+    from_port   = 5432
+    to_port     = 5432
+    cidr_blocks = var.developer_cidr_blocks
   }
 
   ingress {
     protocol    = "tcp"
-    description = "PostGRES"
+    description = "VPC access to PostGRES"
     from_port   = 5432
     to_port     = 5432
-    cidr_blocks = concat(
-      var.private_subnet_cidr_blocks,
-      var.developer_cidr_blocks
-    )
+    cidr_blocks = var.inbound_subnets
   }
 
   egress {
