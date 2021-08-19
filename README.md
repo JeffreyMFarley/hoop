@@ -2,7 +2,7 @@
 
 This project can be used as the starting point for setting up an AWS environment.
 
-## Solution Overview
+## Solution Overview (Fargate version)
 
 ![architecture diagram](./docs/aws_arch.gv.png)
 
