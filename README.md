@@ -16,10 +16,6 @@ The directory structure includes:
 * `/services`: The API and UI applications
 * `/terraform`: Code for infrastructure setup
 
-### Developer Guidance
-
-__Before you touch any code,__ please review the [CONTRIBUTING](./CONTRIBUTING.MD) guide.
-
 ### Running Code
 
 * [Front End Developers](./services/Front_End_Development.md)
