@@ -23,19 +23,27 @@ This project uses Terraform to provision and maintain the state of the applicati
     Terraform has been successfully initialized!
     ```
 
-### Creating in a new AWS account
+### Create a new AWS account
+
+1. Create a new CI user in AWS
+    1. Start with Admin, but use CloudTrail to audit permissions and then make the correct policy
+    2. [Here are the ones I found for the Fargate version](https://github.com/JeffreyMFarley/hoop/wiki/CI-permissions)
+    3. Generate a token for the new user
+1. Update the AWS variables
+    1. In GitHub Secrets
+    1. IN a local `.env` file
+
+### Create the Route 53 Hosted Zone
+
+[Details here](https://github.com/JeffreyMFarley/hoop/wiki/Route53)
+
+### Run `terraform`
 
 As of now, we are not able to simply run `terraform apply` to create everything.
 It has to be run several times before it is complete.
 
 What follows is the most recent steps I have had to use
 
-1. Create a new CI user in AWS
-    1. Start with Admin, but use CloudTrail to audit permissions and then make the correct policy
-    1. Generate a token for the new user
-1. Update the AWS variables
-    1. In GitHub Secrets
-    1. IN a local `.env` file
 1. Perform the initial apply to create the buckets and image repositories
     ```
     $ terraform apply -target=module.image_repo
@@ -55,11 +63,6 @@ What follows is the most recent steps I have had to use
     docker push <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/names
     ```
 1. Perform a second apply
-    ```
-    $ terraform apply
-    # The API gateway deployments fail
-    ```
-1. Perform a third apply
     ```
     $ terraform apply
 
