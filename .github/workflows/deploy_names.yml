@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         REGION:        us-east-1
-        REPO:          names
+        REPO:          hoop_names
         SRC_DIR:       ./services/names
 
     steps:

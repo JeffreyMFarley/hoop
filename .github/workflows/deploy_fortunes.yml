@@ -8,7 +8,7 @@ jobs:
     env:
         FUNCTION_NAME: fortunes_container
         REGION:        us-east-1
-        REPO:          fortunes
+        REPO:          hoop_fortunes
         SRC_DIR:       ./services/fortunes
 
     steps:

@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         REGION:        us-east-1
-        REPO:          heroes
+        REPO:          hoop_heroes
         SRC_DIR:       ./services/heroes
 
     steps:
