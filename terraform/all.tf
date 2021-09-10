@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "hoop-terraform"
+    key    = "dev/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
 locals {
   make_fargate = false
 }

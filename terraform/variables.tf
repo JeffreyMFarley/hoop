@@ -1,3 +1,8 @@
+variable "account_id" {
+  type        = string
+  description = "The AWS account ID"
+}
+
 variable "region" {
   type        = string
   description = "The main Amazon region where resources will be deployed"

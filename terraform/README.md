@@ -2,12 +2,33 @@
 
 This project uses Terraform to provision and maintain the state of the application in AWS.
 
+### First time set up in AWS
+
+1. Create a new CI user in AWS
+    1. Start with Admin, but use CloudTrail to audit permissions and then make the correct policy
+    1. Generate a token for the new user
+1. Update the AWS variables
+    1. In GitHub Secrets
+    1. I a local `.env` file
+1. Create an S3 bucket for the shared Terraform state `hoop-terraform`
+    1. Make sure the CI account has read/write access
+1. Create a `dev` folder in `hoop-terraform`
+1. [Create the Route 53 Hosted Zone](https://github.com/JeffreyMFarley/hoop/wiki/Route53)
+
 ### Setting Up Your Workstation
 
 1. [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/certification-associate-tutorials#install-terraform)
 1. Clone this repo
 1. `cd terraform`
-1. `terraform login`
+1. Gather developer IDs from http://icanhazip/ or some other location.  These will go in the `developer_cidr_blocks` section
+1. Create a `terraform.tfvars` file to set the important variables:
+    ```
+    account_id            = "...your id...."
+    region                = "us-east-1"
+    name                  = "HOOP"
+    domain_name           = "pluribuslab.com"
+    developer_cidr_blocks = [...enter values here in CIDR notation... x.x.x.x/32]
+    ```
 1. `terraform init`
     ```
     Initializing modules...
@@ -23,19 +44,13 @@ This project uses Terraform to provision and maintain the state of the applicati
     Terraform has been successfully initialized!
     ```
 
-### Creating in a new AWS account
+### Run `terraform`
 
 As of now, we are not able to simply run `terraform apply` to create everything.
 It has to be run several times before it is complete.
 
 What follows is the most recent steps I have had to use
 
-1. Create a new CI user in AWS
-    1. Start with Admin, but use CloudTrail to audit permissions and then make the correct policy
-    1. Generate a token for the new user
-1. Update the AWS variables
-    1. In GitHub Secrets
-    1. IN a local `.env` file
 1. Perform the initial apply to create the buckets and image repositories
     ```
     $ terraform apply -target=module.image_repo
