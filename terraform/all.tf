@@ -6,10 +6,6 @@ terraform {
   }
 }
 
-locals {
-  make_fargate = false
-}
-
 # -----------------------------------------------------------------------------
 # Shared Resources
 # -----------------------------------------------------------------------------
@@ -43,7 +39,6 @@ module "vpc" {
 }
 
 module "ecs_cluster" {
-  count = local.make_fargate ? 1 : 0
   source = "./ecs-cluster"
 
   name = var.name
@@ -87,7 +82,6 @@ module "fortunes" {
 }
 
 module "heroes" {
-  count = local.make_fargate ? 1 : 0
   source = "./image-in-fargate"
 
   name      = "heroes"
@@ -98,7 +92,7 @@ module "heroes" {
   repository_name    = module.image_repo["heroes"].name
   repository_url     = module.image_repo["heroes"].repo_url
 
-  cluster_id         = local.make_fargate ? module.ecs_cluster.id : 0
+  cluster_id         = module.ecs_cluster.id
 
   vpc_id             = module.vpc.vpc_id
   security_group_id  = module.vpc.security_group_id
@@ -120,7 +114,6 @@ module "heroes" {
 }
 
 module "names" {
-  count = local.make_fargate ? 1 : 0
   source = "./image-in-fargate"
 
   name      = "names"
@@ -131,7 +124,7 @@ module "names" {
   repository_name    = module.image_repo["names"].name
   repository_url     = module.image_repo["names"].repo_url
 
-  cluster_id         = local.make_fargate ? module.ecs_cluster.id : 0
+  cluster_id         = module.ecs_cluster.id
 
   vpc_id             = module.vpc.vpc_id
   security_group_id  = module.vpc.security_group_id
