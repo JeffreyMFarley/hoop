@@ -9,11 +9,12 @@ This project uses Terraform to provision and maintain the state of the applicati
     1. Generate a token for the new user
 1. Update the AWS variables
     1. In GitHub Secrets
-    1. I a local `.env` file
+    1. In a local `.env` file
 1. Create an S3 bucket for the shared Terraform state `hoop-terraform`
     1. Make sure the CI account has read/write access
 1. Create a `dev` folder in `hoop-terraform`
 1. [Create the Route 53 Hosted Zone](https://github.com/JeffreyMFarley/hoop/wiki/Route53)
+    1. This will take a while (an hour?) but it has to finish before proceeding
 
 ### Setting Up Your Workstation
 
@@ -90,3 +91,4 @@ What follows is the most recent steps I have had to use
     url_api = "https://api.esotericsoftware.com/"
     url_static_web = "https://www.esotericsoftware.com/"    
     ```
+1. Navigate to the URL listed in `url_static_web` to verify the site is up and running
