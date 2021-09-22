@@ -57,10 +57,10 @@ module.exports = {
     new ESLintPlugin(),
     new webpack.DefinePlugin({
       URL_FORTUNES: JSON.stringify(
-        process.env.URL_FORTUNES ? process.env.URL_FORTUNES : 'https://api.esotericsoftware.com/v1/fortunes/'
+        process.env.URL_FORTUNES ? process.env.URL_FORTUNES : 'https://api.pluribuslab.com/v1/fortunes/'
       ),
       URL_NAMES: JSON.stringify(
-        process.env.URL_NAMES ? process.env.URL_NAMES : 'https://api.esotericsoftware.com/v1/names/'
+        process.env.URL_NAMES ? process.env.URL_NAMES : 'https://api.pluribuslab.com/v1/names/'
       )
     })
   ]
