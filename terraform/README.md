@@ -92,3 +92,24 @@ What follows is the most recent steps I have had to use
     url_static_web = "https://www.esotericsoftware.com/"    
     ```
 1. Navigate to the URL listed in `url_static_web` to verify the site is up and running
+
+### Destroying
+
+Because of some quirks of timing and dependencies (sorry!), these steps are the way to unwind the platform cleanly
+
+1. Remove the two Fargate services
+    ```
+    $ terraform destroy -target=module.heroes
+    $ terraform destroy -target=module.names
+    ```
+1. Go to the [API Gateway page](https://console.aws.amazon.com/apigateway/main/apis?region=us-east-1)
+    1. Click into the Hoop API
+    2. You will see only the `fortunes` API is left
+    3. Deploy the API to the `main` stage
+1. Go to the [VPC Links page](https://console.aws.amazon.com/apigateway/main/vpc-links/list?region=us-east-1)
+    1. Delete the Heroes VPC Link
+    2. Delete the Names VPC Link
+1. Return to your console
+    ```
+    $ terraform destroy
+    ```
