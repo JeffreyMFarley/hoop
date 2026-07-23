@@ -7,9 +7,8 @@ ARG RUNTIME_VERSION="3.9"
 
 FROM python:${RUNTIME_VERSION}-slim-buster AS python-base
 
-# Install GCC (Alpine uses musl but we compile and link dependencies with GCC)
-RUN apt-get install \
-    libstdc++
+# No extra system packages needed: flask is pure Python and psycopg2-binary
+# ships as a self-contained wheel (bundles libpq).
 
 # --------------------------------------------------------------------------------
 # Stage 2 - build function and dependencies
@@ -24,7 +23,8 @@ RUN mkdir -p ${FUNCTION_DIR}
 
 # Optional – Install the function's dependencies
 COPY requirements.txt /
-RUN python${RUNTIME_VERSION} -m pip install -r /requirements.txt --target ${FUNCTION_DIR}
+RUN python${RUNTIME_VERSION} -m pip install --upgrade pip \
+    && python${RUNTIME_VERSION} -m pip install -r /requirements.txt --target ${FUNCTION_DIR}
 
 # Copy the src files
 COPY src/* ${FUNCTION_DIR}
