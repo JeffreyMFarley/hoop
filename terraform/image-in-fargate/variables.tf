@@ -26,13 +26,13 @@ variable "memory" {
 }
 
 variable "environment" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "An array of {name: x, value: y}"
 }
 
 variable "secrets" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "An array of {name: x, valueFrom: arn}"
 }
@@ -41,7 +41,7 @@ variable "secrets" {
 # Overall
 
 variable "region" {
-  type = string
+  type        = string
   description = "The AWS region where resources have been deployed"
 }
 

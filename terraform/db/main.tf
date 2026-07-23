@@ -6,26 +6,26 @@ resource "random_string" "db_password" {
 #################################################################################
 
 resource "aws_db_instance" "main" {
-  name       = var.db_name
+  db_name    = var.db_name
   identifier = lower(var.name)
 
-  allocated_storage     = 20
-  engine                = "postgres"
-  engine_version        = "12.5"
-  instance_class        = "db.t2.micro"
-  password              = random_string.db_password.result
-  username              = var.db_username
+  allocated_storage = 20
+  engine            = "postgres"
+  engine_version    = "16"
+  instance_class    = "db.t3.micro"
+  password          = random_string.db_password.result
+  username          = var.db_username
 
-  copy_tags_to_snapshot           = true
+  copy_tags_to_snapshot = true
   enabled_cloudwatch_logs_exports = [
     "postgresql"
   ]
-  max_allocated_storage           = 1000
-  performance_insights_enabled    = true
-  publicly_accessible             = true
-  skip_final_snapshot             = true
+  max_allocated_storage        = 1000
+  performance_insights_enabled = true
+  publicly_accessible          = true
+  skip_final_snapshot          = true
 
-  db_subnet_group_name   = var.subnet_group_name
+  db_subnet_group_name = var.subnet_group_name
   vpc_security_group_ids = [
     aws_security_group.main.id
   ]
@@ -68,12 +68,12 @@ resource "aws_security_group" "main" {
 ##--------------------------------------------------------------
 ##  password
 
-resource aws_secretsmanager_secret db_password {
-  name = "${var.name}-db-password"
+resource "aws_secretsmanager_secret" "db_password" {
+  name                    = "${var.name}-db-password"
   recovery_window_in_days = 0
 }
 
-resource aws_secretsmanager_secret_version db_password {
+resource "aws_secretsmanager_secret_version" "db_password" {
   secret_id     = aws_secretsmanager_secret.db_password.id
   secret_string = random_string.db_password.result
 }

@@ -17,3 +17,7 @@ output "version_path_id" {
 output "rest_api_execution_arn" {
   value = aws_api_gateway_rest_api.main.execution_arn
 }
+
+output "domain_name" {
+  value = aws_api_gateway_domain_name.main.domain_name
+}

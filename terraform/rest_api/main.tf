@@ -7,13 +7,10 @@ resource "aws_api_gateway_rest_api" "main" {
   }
 }
 
-resource "aws_api_gateway_deployment" "main" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+# NOTE: The deployment, stage and base-path mapping live in the root module
+# (see all.tf). They must be created *after* every service's methods and
+# integrations, which in turn depend on this module — keeping them here would
+# create a dependency cycle and snapshot an empty API.
 
 resource "aws_api_gateway_resource" "v1" {
   rest_api_id = aws_api_gateway_rest_api.main.id
